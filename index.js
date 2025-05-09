@@ -18,7 +18,6 @@ async function main() {
 }
 
 function trimRightStr(str, len) {
-  // Ellipsis takes 3 positions, so the index of substring is 0 to total length - 3.
   return str.length > len ? str.substring(0, len - 3) + "..." : str;
 }
 
@@ -30,13 +29,20 @@ async function updateGist(stats) {
     console.error(`Unable to get gist\n${error}`);
   }
 
+  const emotes = {
+    Python: "🐍",
+    Other: "🔧",
+  };
+
   const lines = [];
   for (let i = 0; i < Math.min(stats.data.languages.length, 5); i++) {
     const data = stats.data.languages[i];
     const { name, percent, text: time } = data;
 
+    const emote = emotes[name] || "🔸"; 
+
     const line = [
-      trimRightStr(name, 10).padEnd(10),
+      emote + " " + trimRightStr(name, 10).padEnd(10),
       time.padEnd(14),
       generateBarChart(percent, 21),
       String(percent.toFixed(1)).padStart(5) + "%"
@@ -45,7 +51,7 @@ async function updateGist(stats) {
     lines.push(line.join(" "));
   }
 
-  if (lines.length == 0) return;
+  if (lines.length === 0) return;
 
   try {
     // Get original filename to update that same file
