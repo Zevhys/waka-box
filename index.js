@@ -29,10 +29,14 @@ async function updateGist(stats) {
     console.error(`Unable to get gist\n${error}`);
   }
 
-  const emotes = {
-    Python: "🐍",
-    Other: "🔧",
-  };
+const emotes = {
+  Python: "🐍",
+  JavaScript: "✨",
+  Other: "🔧",
+  Java: "☕",
+  HTML: "🌐",
+  CSS: "🎨"
+};
 
   const lines = [];
   for (let i = 0; i < Math.min(stats.data.languages.length, 5); i++) {
