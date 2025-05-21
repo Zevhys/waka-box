@@ -13,7 +13,7 @@ const wakatime = new WakaTimeClient(wakatimeApiKey);
 const octokit = new Octokit({ auth: `token ${githubToken}` });
 
 async function main() {
-  const stats = await wakatime.getMyStats({ range: RANGE.LAST_7_DAYS });
+  const stats = await wakatime.getMyStats({ range: RANGE.LAST_YEAR });
   await updateGist(stats);
 }
 
@@ -29,21 +29,21 @@ async function updateGist(stats) {
     console.error(`Unable to get gist\n${error}`);
   }
 
-const emotes = {
-  Python: "🐍",
-  JavaScript: "✨",
-  Other: "🔧",
-  Java: "☕",
-  HTML: "🌐",
-  CSS: "🎨"
-};
+  const emotes = {
+    Python: "🐍",
+    JavaScript: "✨",
+    Other: "🔧",
+    Java: "☕",
+    HTML: "🌐",
+    CSS: "🎨"
+  };
 
   const lines = [];
   for (let i = 0; i < Math.min(stats.data.languages.length, 5); i++) {
     const data = stats.data.languages[i];
     const { name, percent, text: time } = data;
 
-    const emote = emotes[name] || "🔸"; 
+    const emote = emotes[name] || "🔸";
 
     const line = [
       emote + " " + trimRightStr(name, 10).padEnd(10),
