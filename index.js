@@ -13,6 +13,17 @@ const octokit = new Octokit({ auth: `token ${githubToken}` });
 
 async function main() {
   const stats = await wakatime.getMyStats({ range: RANGE.LAST_30_DAYS });
+
+  console.log("=== DEBUG: WakaTime Data ===");
+  console.log("Stats data:", JSON.stringify(stats.data, null, 2));
+
+  if (stats.data && stats.data.languages) {
+    console.log("Languages found:");
+    stats.data.languages.forEach((lang, index) => {
+      console.log(`${index + 1}. ${lang.name} - ${lang.percent}% - ${lang.text}`);
+    });
+  }
+
   await updateGist(stats);
 }
 
@@ -26,23 +37,82 @@ async function updateGist(stats) {
     gist = await octokit.gists.get({ gist_id: gistId });
   } catch (error) {
     console.error(`Unable to get gist\n${error}`);
+    return;
   }
 
   const emotes = {
     JavaScript: "✨",
     TypeScript: "🔷",
+    HTML: "🌐",
+    CSS: "🎨",
+    SCSS: "🎨",
+    SASS: "🎨",
+
     Python: "🐍",
     Java: "☕",
     "C++": "⚡",
     "C#": "💜",
+    C: "⚡",
+    Go: "🐹",
+    Rust: "🦀",
+    Swift: "🍎",
+    Kotlin: "🟠",
+    Dart: "🎯",
+    Ruby: "💎",
+    PHP: "🐘",
+    Scala: "🔴",
+
+    React: "⚛️",
+    Vue: "💚",
+    Angular: "🅰️",
+    Svelte: "🧡",
+
+    "Node.js": "🟢",
+    NodeJS: "🟢",
+    Django: "🐍",
+    Flask: "🐍",
+    Laravel: "🟥",
+
+    Flutter: "🎯",
+    "React Native": "📱",
+    Android: "🤖",
+
+    MySQL: "🗃️",
+    PostgreSQL: "🐘",
+    MongoDB: "🍃",
+    Redis: "🔴",
+    SQL: "🗃️",
+
+    Docker: "🐳",
+    Kubernetes: "☸️",
+
+    Bash: "📟",
+    Shell: "🐚",
+    PowerShell: "💙",
+
+    JSON: "📋",
+    YAML: "📄",
+    XML: "📰",
+    Markdown: "📝",
+
     Other: "🔧"
   };
+
+  console.log("=== DEBUG: Processing Languages ===");
+
+  if (!stats.data || !stats.data.languages) {
+    console.log("ERROR: No language data found in stats");
+    return;
+  }
 
   const lines = [];
   for (let i = 0; i < Math.min(stats.data.languages.length, 5); i++) {
     const data = stats.data.languages[i];
     const { name, percent, text: time } = data;
     const emote = emotes[name] || "🔸";
+
+    console.log(`Processing: ${name} -> Emote: ${emote}`);
+
     const line = [
       emote + " " + trimRightStr(name, 10).padEnd(10),
       time.padEnd(14),
@@ -50,10 +120,19 @@ async function updateGist(stats) {
       String(percent.toFixed(1)).padStart(5) + "%"
     ];
     lines.push(line.join(" "));
+
+    console.log(`Generated line: "${line.join(" ")}"`);
   }
-  if (lines.length === 0) return;
+
+  if (lines.length === 0) {
+    console.log("ERROR: No lines generated");
+    return;
+  }
+
+  console.log("=== DEBUG: Final Gist Content ===");
+  console.log(lines.join("\n"));
+
   try {
-    // Get original filename to update that same file
     const filename = Object.keys(gist.data.files)[0];
     await octokit.gists.update({
       gist_id: gistId,
@@ -64,8 +143,11 @@ async function updateGist(stats) {
         }
       }
     });
+
+    console.log('✅ Success to update the gist 🎉');
+
   } catch (error) {
-    console.error(`Unable to update gist\n${error}`);
+    console.error(`❌ Unable to update gist\n${error}`);
   }
 }
 
