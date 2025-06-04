@@ -15,9 +15,10 @@ async function main() {
   const stats = await wakatime.getMyStats({ range: RANGE.LAST_30_DAYS });
 
   console.log("=== DEBUG: WakaTime Data ===");
-  console.log("stats:", JSON.stringify(stats, null, 2), "\n");
-  console.log("stats.data:", JSON.stringify(stats.data, null, 2), "\n");
-  console.log("stats.data.languages:", JSON.stringify(stats.data.languages, null, 2), "\n");
+  // console.log("stats:", JSON.stringify(stats, null, 2), "\n");
+  console.log("stats.data.languages:", JSON.stringify(stats.data.languages, null, 2), "\n", "-".repeat(20));
+  // console.log("stats.data.languages:", JSON.stringify(stats.data.languages, null, 2), "\n");
+  console.log("stats.languages:", JSON.stringify(stats.languages, null, 2), "\n");
 
   if (stats.data && stats.data.languages) {
     console.log("Languages found:");
