@@ -15,10 +15,6 @@ async function main() {
   const stats = await wakatime.getMyStats({ range: RANGE.LAST_30_DAYS });
 
   console.log("=== DEBUG: WakaTime Data ===");
-  // console.log("stats:", JSON.stringify(stats, null, 2), "\n");
-  console.log("stats.data.languages:", JSON.stringify(stats.data.languages, null, 2), "\n", "-".repeat(20));
-  // console.log("stats.data.languages:", JSON.stringify(stats.data.languages, null, 2), "\n");
-  console.log("stats.languages:", JSON.stringify(stats.languages, null, 2), "\n");
 
   if (stats.data && stats.data.languages) {
     console.log("Languages found:");
@@ -119,7 +115,7 @@ async function updateGist(stats) {
     const line = [
       emote + " " + trimRightStr(name, 10).padEnd(10),
       time.padEnd(14),
-      generateBarChart(percent, 21),
+      generateBarChart(percent, 17),
       String(percent.toFixed(1)).padStart(5) + "%"
     ];
     lines.push(line.join(" "));
