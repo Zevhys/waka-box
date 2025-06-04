@@ -2,6 +2,9 @@ name: Update gist with WakaTime stats
 on:
   schedule:
     - cron: "0 23 * * *"
+  push:
+    branches:
+      - master
   # Manual triggers with workflow_dispatch
   workflow_dispatch:
 jobs:
@@ -10,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Update gist
-        uses: matchai/waka-box@master
+        uses: Zevhys/waka-box@master
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GIST_ID: ${{ secrets.GIST_ID }}
